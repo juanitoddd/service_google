@@ -3,8 +3,8 @@ import "dotenv/config";
 import "module-alias/register";
 import express, { Application, NextFunction, Router, json } from "express";
 import { googleAuth } from "./controllers/auth";
-// import { rabbitConsume } from "@shared";
-// import consumer from "./functions/consumer";
+import { rabbitConsume } from "./functions/rabbit";
+import consumer from "./functions/consumer";
 
 // Routes
 import routesMain from "./routes/main.route";
@@ -34,4 +34,4 @@ app.listen(PORT, (): void => {
 });
 
 // RabbitMQ Queue
-// rabbitConsume("google", consumer);
+rabbitConsume("google", consumer);
