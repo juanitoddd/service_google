@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsx src/index.ts",
-    "dev": "tsx watch src/app.ts"
+    "dev": "tsx watch src/index.ts"
   },
   "nodemonConfig": {
     "ignore": [

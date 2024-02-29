@@ -1,8 +1,10 @@
-const fs = require("fs").promises;
-const path = require("path");
-const process = require("process");
-const { authenticate } = require("@google-cloud/local-auth");
-const { google } = require("googleapis");
+import fs from "fs/promises";
+import path from "path";
+import process from "process";
+import { authenticate } from "@google-cloud/local-auth";
+import { google } from "googleapis";
+import { NextFunction, Request, Response } from "express";
+import { gRequest } from "src/types/express";
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
@@ -50,7 +52,7 @@ async function saveCredentials(client: any) {
  * Load or request or authorization to call APIs.
  *
  */
-async function authorize() {
+export const authorize = async () => {
   let client = await loadSavedCredentialsIfExist();
   if (client) {
     return client;
@@ -63,31 +65,15 @@ async function authorize() {
     await saveCredentials(client);
   }
   return client;
-}
+};
 
-/**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-async function listEvents(auth: any) {
-  const calendar = google.calendar({ version: "v3", auth });
-  const res = await calendar.events.list({
-    calendarId: "primary",
-    timeMin: new Date().toISOString(),
-    maxResults: 10,
-    singleEvents: true,
-    orderBy: "startTime",
-  });
-  const events = res.data.items;
-  if (!events || events.length === 0) {
-    console.log("No upcoming events found.");
-    return;
-  }
-  console.log("Upcoming 10 events:");
-  events.map((event: any) => {
-    const start = event.start.dateTime || event.start.date;
-    console.log(`${start} - ${event.summary}`);
-  });
-}
-
-authorize().then(listEvents).catch(console.error);
+export const googleAuth = async (
+  req: gRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  req.locals = {} as any;
+  const auth = await authorize();
+  req.locals.auth = auth;
+  next();
+};

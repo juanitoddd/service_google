@@ -1,7 +1,8 @@
 // Setup
 import "dotenv/config";
 import "module-alias/register";
-import express, { Application, Router, json } from "express";
+import express, { Application, NextFunction, Router, json } from "express";
+import { googleAuth } from "./controllers/auth";
 // import { rabbitConsume } from "@shared";
 // import consumer from "./functions/consumer";
 
@@ -11,6 +12,10 @@ import routesMain from "./routes/main.route";
 const router = Router();
 const app: Application = express();
 
+// Middleware
+app.use(googleAuth as any);
+
+// Body Json
 app.use(json());
 
 // API Routes
@@ -23,7 +28,7 @@ const _date = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
 console.log(`[Date] ${_date}`);
 
 // HTTP Server
-const PORT = process.env.PORT || 4004;
+const PORT = process.env.PORT || 4014;
 app.listen(PORT, (): void => {
   console.log(`[log] Google app listening at http://localhost:${PORT}`);
 });
