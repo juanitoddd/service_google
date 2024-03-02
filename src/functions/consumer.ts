@@ -1,6 +1,6 @@
 import { authorize } from "src/controllers/auth";
 import { RabbitMsg } from "../types/rabbit";
-import { listCalendars } from "src/controllers/calendar";
+import { listCalendars, listTodayEvents } from "src/controllers/calendar";
 import { listMajors } from "src/controllers/sheets";
 import { rabbitPublish } from "./rabbit";
 
@@ -14,6 +14,11 @@ const consumer = async (_msg: RabbitMsg) => {
       const calendars = await listCalendars(client)
       console.log(calendars);
       await rabbitPublish('telegram', calendars)
+      break;
+    case 'events':
+      const events = await listTodayEvents(client)
+      console.log(events);
+      await rabbitPublish('telegram', events)
       break;
     case 'sheets':
       const majors = await listMajors(client)
