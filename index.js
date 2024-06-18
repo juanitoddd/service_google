@@ -3,7 +3,7 @@ const path = require("path");
 const process = require("process");
 const { authenticate } = require("@google-cloud/local-auth");
 const { google } = require("googleapis");
-const dayjs = require("dayjs")
+const dayjs = require("dayjs");
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
@@ -36,7 +36,8 @@ async function loadSavedCredentialsIfExist() {
  */
 async function saveCredentials(client) {
   const content = await fs.readFile(CREDENTIALS_PATH);
-  const keys = JSON.parse(content);  const key = keys.installed || keys.web;
+  const keys = JSON.parse(content);
+  const key = keys.installed || keys.web;
   const payload = JSON.stringify({
     type: "authorized_user",
     client_id: key.client_id,
@@ -74,14 +75,14 @@ async function listCalendars(auth) {
     return;
   }
   const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate()+1);
-  console.log(new Date())
-  console.log(tomorrow)
-  
-  for(const _calendar of calendars) {
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  console.log(new Date());
+  console.log(tomorrow);
+
+  for (const _calendar of calendars) {
     const name = _calendar.summary;
     console.log(`${name}-${_calendar.id}----`);
-    
+
     const res = await calendar.events.list({
       calendarId: _calendar.id,
       timeMin: new Date().toISOString(),
@@ -89,17 +90,17 @@ async function listCalendars(auth) {
       maxResults: 10,
       singleEvents: true,
       orderBy: "startTime",
-    });  
+    });
     const events = res.data.items;
     if (!events || events.length === 0) {
-      console.log("No upcoming events found.");      
+      console.log("No upcoming events found.");
     }
     for (const event of events) {
       const start = event.start.dateTime || event.start.date;
-      const time = dayjs(start).format('HH:mm')
+      const time = dayjs(start).format("HH:mm");
       console.log(`${time} - ${event.summary}`);
-    }        
-  }  
+    }
+  }
 }
 
 /**
@@ -109,7 +110,7 @@ async function listCalendars(auth) {
 async function listEvents(auth) {
   const calendar = google.calendar({ version: "v3", auth });
   const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate()+1);    
+  tomorrow.setDate(tomorrow.getDate() + 1);
   const res = await calendar.events.list({
     calendarId: "5jp7lo45adp6lrg4do4vc7a908@group.calendar.google.com",
     timeMin: new Date().toISOString(),

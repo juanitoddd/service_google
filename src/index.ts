@@ -8,6 +8,8 @@ import consumer from "./functions/consumer";
 
 // Routes
 import routesMain from "./routes/main.route";
+import routesCalendar from "./routes/calendar.route";
+import routesSpreadsheet from "./routes/spreadsheet.route";
 
 const router = Router();
 const app: Application = express();
@@ -20,12 +22,15 @@ app.use(json());
 
 // API Routes
 router.use(routesMain);
+router.use("/calendars", routesCalendar);
+router.use("/spreadsheets", routesSpreadsheet);
 
 // Base URL
 app.use("/api/google/v1", router);
 
 const _date = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
 console.log(`[Date] ${_date}`);
+console.log("[ENV]", process.env.NODE_ENV);
 
 // HTTP Server
 const PORT = process.env.PORT || 4014;
@@ -34,4 +39,4 @@ app.listen(PORT, (): void => {
 });
 
 // RabbitMQ Queue
-rabbitConsume("google", consumer);
+if (process.env.NODE_ENV === "PRODUCTION") rabbitConsume("google", consumer);
