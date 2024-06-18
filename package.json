@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts"
+    "start": "NODE_ENV=PRODUCTION tsx src/index.ts",
+    "dev": "NODE_ENV=DEVELOPMENT tsx watch src/index.ts"
   },
   "nodemonConfig": {
     "ignore": [

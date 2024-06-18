@@ -73,10 +73,22 @@ async function listCalendars(auth) {
     console.log("No calendars found.");
     return;
   }
-  calendars.map((calendar, i) => {
+  for (const calendar of calendars) {
     const name = calendar.summary;
-    console.log(`${name}`);
-  });
+    console.log(`${calendar.id} - ${name}`);
+    const res = await calendar.events.list({
+      calendarId: calendar.id,
+      timeMin: new Date().toISOString(),
+      maxResults: 10,
+      singleEvents: true,
+      orderBy: "startTime",
+    });
+    const events = res.data.items;
+    events.map((event, i) => {
+      const start = event.start.dateTime || event.start.date;
+      console.log(`${start} - ${event.summary}`);
+    });
+  }
 }
 
 /**
