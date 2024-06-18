@@ -19,21 +19,21 @@ const consumer = async (_msg: RabbitMsg) => {
       console.log(calendars);
       msg.format = 'json'
       msg.payload = calendars
-      await rabbitPublish('telegram', calendars)
+      await rabbitPublish('telegram', msg)
       break;
     case 'events':
       const events = await listTodayEvents(client)
       console.log(events);
       msg.format = 'json'
       msg.payload = events
-      await rabbitPublish('telegram', events)
+      await rabbitPublish('telegram', msg)
       break;
     case 'sheets':
       const majors = await listMajors(client)
       console.log(majors);
       msg.format = 'json'
       msg.payload = majors
-      // await rabbitPublish('telegram', majors)
+      // await rabbitPublish('telegram', msg)
       break;
     default:
       break;
