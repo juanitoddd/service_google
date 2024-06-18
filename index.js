@@ -3,6 +3,7 @@ const path = require("path");
 const process = require("process");
 const { authenticate } = require("@google-cloud/local-auth");
 const { google } = require("googleapis");
+const dayjs = require("dayjs");
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
@@ -73,21 +74,32 @@ async function listCalendars(auth) {
     console.log("No calendars found.");
     return;
   }
-  for (const calendar of calendars) {
-    const name = calendar.summary;
-    console.log(`${calendar.id} - ${name}`);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  console.log(new Date());
+  console.log(tomorrow);
+
+  for (const _calendar of calendars) {
+    const name = _calendar.summary;
+    console.log(`${name}-${_calendar.id}----`);
+
     const res = await calendar.events.list({
-      calendarId: calendar.id,
+      calendarId: _calendar.id,
       timeMin: new Date().toISOString(),
+      // timeMax: tomorrow.toISOString(),
       maxResults: 10,
       singleEvents: true,
       orderBy: "startTime",
     });
     const events = res.data.items;
-    events.map((event, i) => {
+    if (!events || events.length === 0) {
+      console.log("No upcoming events found.");
+    }
+    for (const event of events) {
       const start = event.start.dateTime || event.start.date;
-      console.log(`${start} - ${event.summary}`);
-    });
+      const time = dayjs(start).format("HH:mm");
+      console.log(`${time} - ${event.summary}`);
+    }
   }
 }
 
@@ -97,9 +109,12 @@ async function listCalendars(auth) {
  */
 async function listEvents(auth) {
   const calendar = google.calendar({ version: "v3", auth });
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
   const res = await calendar.events.list({
-    calendarId: "primary",
+    calendarId: "5jp7lo45adp6lrg4do4vc7a908@group.calendar.google.com",
     timeMin: new Date().toISOString(),
+    timeMax: tomorrow.toISOString(),
     maxResults: 10,
     singleEvents: true,
     orderBy: "startTime",
