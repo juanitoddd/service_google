@@ -1,4 +1,4 @@
-const { google } = require("googleapis");
+import { google } from "googleapis";
 /**
  * Prints the names and majors of students in a sample spreadsheet:
  * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
@@ -39,7 +39,6 @@ export const updateSpreadsheet = async (
       spreadsheetId,
       range,
       valueInputOption: "RAW",
-      majorDimension: "ROWS",
       resource,
     });
     return response.data.updatedCells;
