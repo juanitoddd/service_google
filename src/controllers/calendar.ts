@@ -49,17 +49,10 @@ export const listTodayEvents = async (auth: any) => {
   }
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  console.log(new Date());
-  console.log(tomorrow);
-  const events: any[] = [];
-
+  const allEvents: any[] = [];
   for (const _calendar of calendars) {
     const name = _calendar.summary;
-    console.log(`${name}-${_calendar.id}----`);
-    const _set: any = {
-      calendar: name,
-      events: [],
-    };
+    console.log(`${name}-----`);
     const res = await calendar.events.list({
       calendarId: _calendar.id,
       timeMin: new Date().toISOString(),
@@ -69,16 +62,16 @@ export const listTodayEvents = async (auth: any) => {
       orderBy: "startTime",
     });
     const events = res.data.items;
-    if (!events || events.length === 0) {
-      console.log("No upcoming events found.");
-    }
+    // if (!events || events.length === 0) console.log("No upcoming events found.");
     for (const event of events) {
       const start = event.start.dateTime || event.start.date;
       const time = dayjs(start).format("HH:mm");
-      _set.events.push(`${time} - ${event.summary}`);
+      // _set.events.push(`${time} - ${event.summary}`)
       console.log(`${time} - ${event.summary}`);
+      allEvents.push(`${time} - ${event.summary}`);
     }
-    events.push(_set);
   }
-  return events;
+  console.log("events");
+  console.log(allEvents);
+  return allEvents;
 };
